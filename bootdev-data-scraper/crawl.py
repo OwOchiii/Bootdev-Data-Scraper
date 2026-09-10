@@ -25,3 +25,18 @@ def get_first_paragraph_from_html(html):
     if paragraph:
         return paragraph.get_text()
     return None
+
+def get_urls_from_html(html, base_url):
+    soup = BeautifulSoup(html, 'html.parser')
+    urls = []
+    for a_tag in soup.find_all('a', href=True):
+        href = a_tag['href']
+        if href.startswith('http'):
+            urls.append(href)
+        else:
+            # Handle relative URLs
+            parsed_base_url = urlparse(base_url)
+            normalized_base_url = parsed_base_url.scheme + "://" + parsed_base_url.netloc
+            full_url = normalized_base_url + href if href.startswith('/') else normalized_base_url + '/' + href
+            urls.append(full_url)
+    return urls
