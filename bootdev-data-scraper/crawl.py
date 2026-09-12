@@ -40,3 +40,19 @@ def get_urls_from_html(html, base_url):
             full_url = normalized_base_url + href if href.startswith('/') else normalized_base_url + '/' + href
             urls.append(full_url)
     return urls
+
+def get_img_urls_from_html(html,input_url):
+    soup = BeautifulSoup(html, 'html.parser')
+    img_urls = []
+    for img_tag in soup.find_all('img', src=True):
+        img_urls.append(input_url + img_tag['src'])
+    return img_urls
+
+def extract_page_data(input_body, input_url):
+    return dict(
+        url=input_url,
+        heading=get_heading_from_html(input_body),
+        first_paragraph=get_first_paragraph_from_html(input_body),
+        outgoing_links=get_urls_from_html(input_body, input_url),
+        image_urls=get_img_urls_from_html(input_body,input_url),
+    )
