@@ -1,5 +1,16 @@
+from urllib import request
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup, Tag
+import requests
+
+
+def get_html(url):
+    r = requests.get(url, headers={"User-Agent": "BootCrawler/1.0"})
+    if r.status_code == 400 or r.status_code == 404:
+        raise Exception("Bad request")
+    if r.headers['Content-Type'] != 'text/html':
+        raise Exception("Not HTML")
+    return r.text
 
 def normalize_url(url):
     """
