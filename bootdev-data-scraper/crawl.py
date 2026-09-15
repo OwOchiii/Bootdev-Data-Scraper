@@ -12,6 +12,23 @@ def get_html(url):
         raise Exception("Not HTML")
     return r.text
 
+def crawl_page(base_url, current_url=None, page_data=None):
+    if page_data is None:
+        page_data = {}
+    if current_url is None:
+        current_url = base_url
+    try:
+        html = get_html(current_url)
+        page_data[current_url] = extract_page_data(html, current_url)
+        outgoing_links = page_data[current_url]['outgoing_links']
+        for link in outgoing_links:
+            normalized_link = normalize_url(link)
+            if normalized_link not in page_data:
+                crawl_page(base_url, link, page_data)
+    except Exception as e:
+        print(f"Error crawling {current_url}: {e}")
+    return page_data
+
 def normalize_url(url):
     """
     Normalize a URL by removing the scheme and trailing slash.
