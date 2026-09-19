@@ -1,6 +1,7 @@
 import sys
 import asyncio
 from crawl import crawl_site_async
+from json_report import write_json_report
 
 
 async def main():
@@ -17,7 +18,7 @@ async def main():
     page_data = await crawl_site_async(url, max_concurrency, max_pages)
     for data in page_data.values():
         print(f"URL: {data['url']}, Heading: {data['heading']}, First Paragraph: {data['first_paragraph']}")
-
+    write_json_report(page_data)
 
 if __name__ == "__main__":
     asyncio.run(main())
